@@ -9,7 +9,7 @@ image:
   repository: r8or0pz/hello
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "v2"
 
 imagePullSecrets: []
 nameOverride: ""
