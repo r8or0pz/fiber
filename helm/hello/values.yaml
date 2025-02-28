@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   registry: docker.io
-  repository: r8or0pz/hello:v2
+  repository: r8or0pz/hello
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
