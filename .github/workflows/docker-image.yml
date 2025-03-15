@@ -38,7 +38,7 @@ jobs:
           context: .
           tags: |
             r8or0pz/fiber-hello:latest
-            r8or0pz/fiber-hello:${{ SHA_SHORT }}
+            r8or0pz/fiber-hello:${{ env.SHA_SHORT }}
           push: true
 
       - name: Configure Git
