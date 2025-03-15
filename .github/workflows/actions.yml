@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Actions
 on:
   push:
     branches: [ "master" ]
@@ -12,6 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Set Commit short SHA
       - name: Set Commit short SHA
         id: vars
         run: |
@@ -41,11 +42,13 @@ jobs:
             r8or0pz/fiber-hello:${{ env.SHA_SHORT }}
           push: true
 
+      # Configure Git
       - name: Configure Git
         run: |
           git config --local user.name "GitHub Actions Bot"
           git config --local user.email "github-actions@ops-craft.org"
 
+      # Version Commit and Push
       - name: Version Commit and Push
         run: |
           git add helm/values.yaml
