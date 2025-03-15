@@ -17,6 +17,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "$sha_short"
+          echo "Test"
 
         #          VALUES_FILE="helm/values.yaml"
         #          IMAGE_NAME="r8or0pz/fiber-hello"
