@@ -1,26 +1,23 @@
 name: Docker Image CI
-
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: >
-        VERSION=${GITHUB_SHA:0:7}
-        VALUES_FILE="helm/values.yaml"
-        IMAGE_NAME="r8or0pz/fiber-hello"
-        sed -i "s|\(tag: \).*|\1$VERSION|" $VALUES_FILE
-        docker build -t ${IMAGE_NAME}:${VERSION} .
-        docker tag ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:latest
-        docker push ${IMAGE_NAME}:${VERSION}
-        docker push ${IMAGE_NAME}:latest
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build the Docker image
+        uses: actions/checkout@v4
+        run: >
+          VERSION=${GITHUB_SHA:0:7}
+          VALUES_FILE="helm/values.yaml"
+          IMAGE_NAME="r8or0pz/fiber-hello"
+          sed -i "s|\(tag: \).*|\1$VERSION|" $VALUES_FILE
+          docker build -t ${IMAGE_NAME}:${VERSION} .
+          docker tag ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:latest
+          docker push ${IMAGE_NAME}:${VERSION}
+          docker push ${IMAGE_NAME}:latest
