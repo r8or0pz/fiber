@@ -5,8 +5,11 @@ VERSION=$(git rev-parse --short HEAD)  # Get the short Git commit hash
 # VERSION=$(date +%Y%m%d-%H%M%S)       # Optionally use a timestamp
 # VERSION=1.0.0                        # Or set a static version manually
 
+VALUES_FILE="helm/values.yaml"
+
 # Define the image name
 IMAGE_NAME="r8or0pz/fiber-hello"
+sed -i "s|\(tag: \).*|\1$VERSION|" $VALUES_FILE
 
 # Build and tag the Docker image
 docker build -t ${IMAGE_NAME}:${VERSION} .

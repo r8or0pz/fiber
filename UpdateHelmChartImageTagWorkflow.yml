@@ -1,0 +1,30 @@
+name: Update Helm Chart Image Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-image-tag:
+    runs-on: debian-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set Docker Image Tag
+      id: set_tag
+      run: echo "TAG=$(echo ${{ github.sha }} | head -c7)" >> $GITHUB_ENV
+
+    - name: Update Helm Values File
+      run: |
+        IMAGE_TAG=${{ env.TAG }}
+        sed -i "s|\(tag: \).*|\1${IMAGE_TAG}|" ./helm/values.yaml
+
+    - name: Commit Updated Values File
+      run: |
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
+        git add ./helm/values.yaml
+        git commit -m "Update image tag to ${{ github.sha }}"
+        git push
