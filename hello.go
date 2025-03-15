@@ -12,7 +12,7 @@ func main() {
     app.Get("/", func(c fiber.Ctx) error {
         return c.JSON(fiber.Map{
             "success": true,
-            "message": "Hello, World 👋! We are using Helm...",
+            "message": "Hello, Michael 👋! We are using Helm...",
         })
     })
 
