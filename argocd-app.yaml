@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: fibergit
+    namespace: fiber
     server: https://kubernetes.default.svc
   project: default
   source:
