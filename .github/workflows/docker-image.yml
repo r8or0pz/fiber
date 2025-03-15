@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          tags: r8or0pz/fiber-hello:latest
+          tags: r8or0pz/fiber-hello:${{ GITHUB_SHA }}
           push: true
 
 
