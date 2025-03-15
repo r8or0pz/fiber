@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
       - values.yaml
-    path: fiber/helm
+    path: helm
     repoURL: git@github.com:r8or0pz/fiber.git
     targetRevision: master
   syncPolicy:
