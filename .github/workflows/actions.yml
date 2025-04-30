@@ -13,6 +13,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     environment: dev
+    permissions:
+      id-token: write # To enable OIDC-based authentication
+      contents: read # To checkout the code
     steps:
       # Checkout the repository
       - name: Checkout Code
