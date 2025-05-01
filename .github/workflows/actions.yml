@@ -49,12 +49,6 @@ jobs:
           cache-from: type=gha,scope=${{ runner.temp }}
           cache-to: type=gha,mode=max,scope=${{ runner.temp }}
 
-      - name: Push Docker image to Amazon ECR
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ${{ steps.build-image.outputs.IMAGE_URI }}
-
       # Cleanup Docker system
       - name: Cleanup Docker
         run: |
