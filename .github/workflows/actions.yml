@@ -38,10 +38,22 @@ jobs:
 
       - name: Build and push Docker image
         id: docker-build
-        run: |
-          docker build -t social/backend-tmp .
-          docker tag social/backend-tmp:latest 714636385116.dkr.ecr.us-east-2.amazonaws.com/social/backend-tmp:latest
-          docker push 714636385116.dkr.ecr.us-east-2.amazonaws.com/social/backend-tmp:latest
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name == 'push' }} # Push only on push events, not PRs
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_latest
+          cache-from: type=gha,scope=${{ runner.temp }}
+          cache-to: type=gha,mode=max,scope=${{ runner.temp }}
+
+      - name: Push Docker image to Amazon ECR
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ steps.build-image.outputs.IMAGE_URI }}
 
       # Cleanup Docker system
       - name: Cleanup Docker
