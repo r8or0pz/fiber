@@ -39,7 +39,7 @@ jobs:
       - name: Build and push Docker image
         id: docker-build
         run: |
-          docker buildx -t social/backend-tmp .
+          docker build -t social/backend-tmp .
           docker tag social/backend-tmp:latest 714636385116.dkr.ecr.us-east-2.amazonaws.com/social/backend-tmp:latest
           docker push 714636385116.dkr.ecr.us-east-2.amazonaws.com/social/backend-tmp:latest
 
