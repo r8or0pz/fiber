@@ -8,11 +8,10 @@ env:
   ECR_REPOSITORY: social/backend-tmp
   IMAGE_TAG: ${{ github.sha }}
   TARGET: "fliff-social-backend-coherent-01"
-  ROLE: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/fliff-social-platform-eks-github-actions
 jobs:
   build-and-push:
+    name: Build and ECR Push
     runs-on: ubuntu-latest
-    environment: dev
     permissions:
       id-token: write # To enable OIDC-based authentication
       contents: read # To checkout the code
@@ -25,7 +24,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: ${{ env.ROLE }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/fliff-social-platform-eks-github-actions
           aws-region: ${{ vars.AWS_REGION }}
 
       # Set up Docker Buildx
@@ -37,16 +36,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag Docker image
+      - name: Build and push Docker image
         id: docker-build
         uses: docker/build-push-action@v5
         with:
-          push: false
-          tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_${{ github.sha }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_latest
-          file: Dockerfile
           context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name == 'push' }} # Push only on push events, not PRs
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_latest
+          cache-from: type=gha,scope=${{ runner.temp }}
+          cache-to: type=gha,mode=max,scope=${{ runner.temp }}
 
       - name: Push Docker image to Amazon ECR
         uses: docker/build-push-action@v3
