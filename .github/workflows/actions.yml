@@ -6,7 +6,6 @@ on:
 
 env:
   ECR_REPOSITORY: social/backend-tmp
-  IMAGE_TAG: ${{ github.sha }}
   TARGET: "web"
 jobs:
   build-and-push:
@@ -19,6 +18,14 @@ jobs:
       # Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Get short commit SHA
+        id: get_short_sha # Give this step an ID
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "Short SHA is: $SHORT_SHA"
+          # Set the short SHA as a step output using the new method
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
 
       # Authenticate to AWS ECR using OIDC
       - name: Configure AWS credentials
@@ -44,7 +51,7 @@ jobs:
           file: ./Dockerfile
           push: ${{ github.event_name == 'push' }} # Push only on push events, not PRs
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_${{ steps.get_short_sha.outputs.short_sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.TARGET }}_latest
           cache-from: type=gha,scope=${{ runner.temp }}
           cache-to: type=gha,mode=max,scope=${{ runner.temp }}
